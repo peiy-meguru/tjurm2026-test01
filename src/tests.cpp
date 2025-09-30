@@ -5,9 +5,15 @@ int my_strlen(char *str) {
     /**
      * 统计字符串的长度。
      */
-
-    // IMPLEMENT YOUR CODE HERE
-    return 0;
+    //原理：字符串末尾必须为\0
+    int i = 0;
+    while (1) {
+        if (str[i] == '\0') {
+            break;
+        }
+        i++;
+    }
+    return i;
 }
 
 
