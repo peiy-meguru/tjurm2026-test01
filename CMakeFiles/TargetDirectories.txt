@@ -1,0 +1,3 @@
+/mnt/c/Users/Kotone/Documents/cpp_test/tjurm2026-test01/CMakeFiles/tjurm-test.dir
+/mnt/c/Users/Kotone/Documents/cpp_test/tjurm2026-test01/CMakeFiles/edit_cache.dir
+/mnt/c/Users/Kotone/Documents/cpp_test/tjurm2026-test01/CMakeFiles/rebuild_cache.dir
