@@ -30,6 +30,7 @@ void my_strcat(char *str_1, char *str_2) {
         if (str_1[i] == '\0') {
             break;// 找长度
         }
+        i++;//应该直接for(int i=0;;i++)的，但不觉得很难看吗，中间留个空不填什么的
     }
     for (int j = 0;; j++)
     {
@@ -38,9 +39,6 @@ void my_strcat(char *str_1, char *str_2) {
             break;
         }
     }
-    
-    
-    // IMPLEMENT YOUR CODE HERE
 }
 
 
