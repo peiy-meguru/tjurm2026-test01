@@ -1,1 +1,0 @@
-/usr/bin/c++  -w -O3 -g -O3 -DNDEBUG CMakeFiles/tjurm-test.dir/main.cpp.o CMakeFiles/tjurm-test.dir/src/tests.cpp.o CMakeFiles/tjurm-test.dir/src/utils.cpp.o -o tjurm-test 

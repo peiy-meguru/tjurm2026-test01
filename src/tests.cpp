@@ -23,24 +23,8 @@ void my_strcat(char *str_1, char *str_2) {
      * 将字符串str_2拼接到str_1之后，我们保证str_1指向的内存空间足够用于添加str_2。
      * 注意结束符'\0'的处理。
      */
-     int i = 0;// str_1搜索\0的位置
-     
-     while (1)
-     {
-        if (str_1[i] == '\0')
-        {
-            break;// i即为str_1长度
-        }
-        i++;
-     }
-     for (int j = 0;; j++)
-     {
-        str_1[i+j] = str_2[j];
-        if (str_2[j] == '\0')
-        {
-            break;
-        }
-     }
+
+    // IMPLEMENT YOUR CODE HERE
 }
 
 
