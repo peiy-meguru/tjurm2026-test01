@@ -28,7 +28,7 @@ void my_strcat(char *str_1, char *str_2) {
     while (1)
     {
         if (str_1[i] == '\0') {
-            break;// 找长度，不过这个直接拿长度行不行？我觉得上面都写了下面随便抄一下也许
+            break;// 找长度，不过这个直接拿长度行不行？我觉得上面都写了下面随便抄一下也行
         }
         i++;//应该直接for(int i=0;;i++)的，但不觉得很难看吗，中间留个空不填什么的
     }
@@ -105,7 +105,6 @@ char* my_strstr(char *s, char *p) {
  *   理解了图片的存储之后，再开始编写代码。
  */
 
-
 // 练习4，将彩色图片(rgb)转化为灰度图片
 void rgb2gray(float *in, float *out, int h, int w) {
     /**
@@ -127,8 +126,15 @@ void rgb2gray(float *in, float *out, int h, int w) {
      * (2) 内存的访问。
      */
 
-    // IMPLEMENT YOUR CODE HERE
-    // ...
+     // 提醒：main.cpp中写了一拖四，明明放在主文件夹还读取..，导致图片读不出来，现已修改
+     for (int i = 0; i < h; i++)
+     {
+        for (int j = 0; j < w; j++)
+        {
+            out[i*w+j] = in[(i*w+j)*3] * 0.2989 + in[(i*w+j)*3+1] * 0.5870 + in[(i*w+j)*3+2] * 0.1140;
+        }
+     }
+     //另外一提，这两个图片实际上不同，从大小可以判断，不行写个python也可以验证
 }
 
 // 练习5，实现图像处理算法 resize：缩小或放大图像

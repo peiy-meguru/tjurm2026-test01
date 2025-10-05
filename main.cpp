@@ -8,7 +8,7 @@
 
 void test_rgb2gray() {
     std::cout << "开始测试函数 << rgb2gray >> ..." << std::endl;
-    char *path = "../images/rgb2gray/input.jpg";
+    char *path = "./images/rgb2gray/input.jpg";
     float *img;
     int h, w, c;
 
@@ -20,7 +20,7 @@ void test_rgb2gray() {
     float *gray = fmalloc(h * w);
     rgb2gray(img, gray, h, w);
 
-    char *out_path = "../images/rgb2gray/output.jpg";
+    char *out_path = "./images/rgb2gray/output.jpg";
     imwrite(out_path, gray, h, w, 1);
     std::cout << "使用你的代码产生的灰度图片已经保存为images/rgb2gray/output.jpg"
               << std::endl
