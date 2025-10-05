@@ -28,7 +28,7 @@ void my_strcat(char *str_1, char *str_2) {
     while (1)
     {
         if (str_1[i] == '\0') {
-            break;// 找长度
+            break;// 找长度，不过这个直接拿长度行不行？我觉得上面都写了下面随便抄一下也许
         }
         i++;//应该直接for(int i=0;;i++)的，但不觉得很难看吗，中间留个空不填什么的
     }
@@ -49,8 +49,20 @@ char* my_strstr(char *s, char *p) {
      * 例如：
      * s = "123456", p = "34"，应该返回指向字符'3'的指针。
      */
-
-    // IMPLEMENT YOUR CODE HERE
+    // 前提：s长度大于p，p非空字符串
+    int ls = my_strlen(s);
+    int lp = my_strlen(p);
+    
+    for (int i = 0; i < ls-lp+1; i++)
+    {
+        for (int j = 0; j < lp && s[i+j] == p[j]; j++)
+        {
+            if (j == lp-1)
+            {
+                return &s[i];
+            }
+        }
+    }
     return 0;
 }
 
