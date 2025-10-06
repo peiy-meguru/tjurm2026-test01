@@ -299,6 +299,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
 }
 
 
+#include <iostream>
 // 练习6，实现图像处理算法：直方图均衡化
 void hist_eq(float *in, int h, int w) {
     /**
@@ -316,6 +317,27 @@ void hist_eq(float *in, int h, int w) {
      * (2) 灰度级个数为256，也就是{0, 1, 2, 3, ..., 255}
      * (3) 使用数组来实现灰度级 => 灰度级的映射
      */
-
-    // IMPLEMENT YOUR CODE HERE
+    //https://zhuanlan.zhihu.com/p/687078241 辅助资料
+    unsigned int hist[256] = {0};//像素灰度统计
+    //double prob[256];
+    double cdf[256];//原文看不懂，这里参考ai给的宝宝巴士版本
+    for (int i = 0; i < h*w; i++)
+    {
+        hist[(int)(in[i])]++;
+    }
+    /*for (int i = 0; i < 256; i++)
+    {
+        prob[i] = hist[i] / (h*w);
+    }*/
+    cdf[0] = hist[0];
+    for (int i = 1; i < 256; i++)
+    {
+        cdf[i] = cdf[i-1] + hist[i];//其实我一直没懂一套组合拳下来干了什么，我只知道原文要积分
+    }
+    for (int i = 0; i < h*w; i++)
+    {
+        in[i] = (cdf[(int)(in[i])] - cdf[0])*255/(h*w-cdf[0]);
+        printf("%d: %f\n",i,in[i]);
+    }
+    //实现了，但图片还是不一样，而且还很诡异的出现了不同方案，留作参考
 }

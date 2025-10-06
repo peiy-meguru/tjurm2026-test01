@@ -103,7 +103,7 @@ void test_strstr() {
 
 void test_hist_eq() {
     std::cout << "开始测试函数 << hist_eq >> ..." << std::endl;
-    char *path = "../images/hist_eq/input.jpg";
+    char *path = "./images/hist_eq/input.jpg";
     float *img;
     int h, w, c;
 
@@ -112,9 +112,9 @@ void test_hist_eq() {
               << "，通道数为" << c
               << std::endl;
 
-    hist_eq(img, h, w);
+    hist_eq(img, h, w);//明显设计正常，处理都在内存中，不写入磁盘，写入磁盘时改为另一文件
 
-    char *out_path = "../images/hist_eq/output.jpg";
+    char *out_path = "./images/hist_eq/output.jpg";
     imwrite(out_path, img, h, w, 1);
     std::cout << "使用你的代码产生的结果已经保存为images/hist_eq/output.jpg"
               << std::endl
