@@ -137,6 +137,7 @@ void rgb2gray(float *in, float *out, int h, int w) {
      //另外一提，这两个图片实际上不同，从大小可以判断，不行写个python也可以验证
 }
 
+
 // 练习5，实现图像处理算法 resize：缩小或放大图像
 void resize(float *in, float *out, int h, int w, int c, float scale) {
     /**
@@ -185,7 +186,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *                  *               *               *
      *              P3(x1, y1)      Q2(x, y1)       P4(x2, y1)
      *
-     *          先用单线性插值法计算出 Q1 和 Q2 的值，再用单线性插值法计算出 P 的值，即
+     *          先用单线性插值法计算出 Q1 和 Q2 的值，再用单线性插值法计算出 P 的值，即//“注意到”
      *                     x2 - x          x - x1
      *          Q1 = P1 * ———————— + P2 * ————————
      *                     x2 - x1         x2 - x1
@@ -198,7 +199,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *          Q = Q1 * ———————— + Q2 * ————————
      *                    y2 - y1         y2 - y1
      *
-     *      2.3 化简：
+     *      2.3 化简：//我不会啊
      *          记 Dx = x2 - x1, Dy = y2 - y1, dx = x - x1, dy = y - y1，
      *
      *                     (Dx - dx)(Dy - dy)         dx(Dy - dy)
@@ -209,10 +210,11 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *              P3 * ————————————— + P4 * —————————
      *                      Dx * Dy            Dx * Dy
      *
+     * //BV1j44y1L7Vo直接看，立体图更直观，总之和投影之类的有关
      *  3. 双线性插值用于 resize 图片
      *      记 原图为 src，目标图为 dst，
      *         比例 dst宽高 = src宽高 * scale，
-     *      设一个点 resize 后的坐标为 (x, y)，resize 前的坐标为 (x', y')，
+     *      设一个点 resize 后的坐标为 (x, y)，resize 前的坐标为 (x', y')，//怎么还逆回来了
      *      则有 x' = x / scale, y' = y / scale，
      *
      *      现在，对于每个目标图片中的像素点 (x, y)：
@@ -220,7 +222,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *          2. 找到其在原图中的四个邻居点 (这四个邻居是相邻的四个点，组成一个正方形)
      *          3. 用双线性插值法计算出 该像素点 的值
      *
-     *      不难发现，在这种情况下：Dx = Dy = 1（原图中相邻的四个像素横竖距离是1）
+     *      **不难发现**，在这种情况下：Dx = Dy = 1（原图中相邻的四个像素横竖距离是1）
      *      所以，上面的公式可以化简为：
      *          Q = P1 * (1 - dx)(1 - dy) + P2 * dx(1 - dy)
      *            + P3 * (1 - dx)dy + P4 * dxdy
@@ -231,12 +233,69 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *        上面这样可以直接将 float 通过下取整的方式转换为 int，
      *        剩下三个邻居就好找了
      *     3. 注意上面的方法中，四个邻居点的坐标可能会超出 src 的范围，
-     *        所以需要对其进行边界检查
+     *        所以需要对其进行边界检查//怎么办？我也不能截断吧，给你延展一下？（超出的直接按照边界点算）
      */
 
+    //香喷喷的屎山
     int new_h = h * scale, new_w = w * scale;
-    // IMPLEMENT YOUR CODE HERE
 
+    float x0,y0,dx,dy,t1,t2,t3,t4;//dx,dy是后来计算的相对值，在投影的时候有用
+    int x1,y1,pp,np,i,j;//op means "Point I Pixel index", and np means "New Pixel index"
+    for (i = 0; i < new_h-1; i++)
+    {
+        y0 = i / scale;
+        y1 = static_cast<int>(y0);
+        for (j = 0; j < new_w-1; j++)
+        {
+            np = 3*(i*new_w+j);
+            x0 = j / scale;
+            x1 = static_cast<int>(x0);
+            pp = 3*(y1*w+x1);
+            dx = x0 - x1;
+            dy = y0 - y1;
+            t1 = (1-dx)*(1-dy);//第一项系数，下同理
+            t2 = dx*(1-dy);
+            t3 = dy*(1-dx);
+            t4 = dy*dx;
+
+            out[np] = in[pp]*t1+in[pp+3]*t2+in[pp+3*w]*t3+in[pp+3*(w+1)]*t4;//R
+            out[np+1] = in[pp+1]*t1+in[pp+4]*t2+in[pp+3*w+1]*t3+in[pp+3*(w+1)+1]*t4;//G
+            out[np+2] = in[pp+2]*t1+in[pp+5]*t2+in[pp+3*w+2]*t3+in[pp+3*(w+1)+2]*t4;//B
+        }
+        np = 3*(i*new_w+j);
+        x0 = j / scale;
+        x1 = static_cast<int>(x0);
+        pp = 3*(y1*w+x1);
+        dx = x0 - x1;
+        dy = y0 - y1;
+        t1 = (1-dx)*(1-dy);//第一项系数，下同理
+        t2 = dx*(1-dy);
+        t3 = dy*(1-dx);
+        t4 = dy*dx;
+        
+        out[np] = in[pp]*t1+in[pp]*t2+in[pp+3*w]*t3+in[pp+3*w]*t4;//R
+        out[np+1] = in[pp+1]*t1+in[pp+1]*t2+in[pp+3*w+1]*t3+in[pp+3*w+1]*t4;//G
+        out[np+2] = in[pp+2]*t1+in[pp+2]*t2+in[pp+3*w+2]*t3+in[pp+3*w+2]*t4;//B
+    }
+    for (j = 0; j < new_w-1; j++)
+    {
+        np = 3*(i*new_w+j);
+        x0 = j / scale;
+        x1 = static_cast<int>(x0);
+        pp = 3*(y1*w+x1);
+        dx = x0 - x1;
+        dy = y0 - y1;
+        t1 = (1-dx)*(1-dy);//第一项系数，下同理
+        t2 = dx*(1-dy);
+        t3 = dy*(1-dx);
+        t4 = dy*dx;
+        out[np] = in[pp]*t1+in[pp+3]*t2+in[pp]*t3+in[pp+3]*t4;//R
+        out[np] = in[pp+1]*t1+in[pp+4]*t2+in[pp+1]*t3+in[pp+4]*t4;//G
+        out[np] = in[pp+2]*t1+in[pp+5]*t2+in[pp+2]*t3+in[pp+5]*t4;//B
+    }
+    out[3*(new_h*new_w-1)] = in[3*(h*w-1)];
+    out[3*(new_h*new_w-1)+1] = in[3*(h*w-1)+1];
+    out[3*(new_h*new_w-1)+2] = in[3*(h*w-1)+2];
 }
 
 

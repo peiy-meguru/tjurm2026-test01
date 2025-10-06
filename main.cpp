@@ -127,7 +127,7 @@ void test_hist_eq() {
 
 
 void test_resize() {
-    char *path = "../images/resize/input.jpg";
+    char *path = "./images/resize/input.jpg";//帮改了
     float *img;
     int h, w, c;
 
@@ -144,8 +144,8 @@ void test_resize() {
         float *resized = fmalloc(new_h * new_w * c);
         resize(img, resized, h, w, c, scale);
 
-        char out_path[] = "../images/resize/output .jpg";
-        out_path[23] = '0' + i;
+        char out_path[] = "./images/resize/output .jpg";
+        out_path[22] = '0' + i;//原来的神人弄了..，导致此处下标应当修改
         imwrite(out_path, resized, new_h, new_w, c);
         std::cout << "使用你的代码产生的图片已经保存为"
                   << out_path << std::endl;
