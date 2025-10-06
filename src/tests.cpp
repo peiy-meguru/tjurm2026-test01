@@ -337,7 +337,7 @@ void hist_eq(float *in, int h, int w) {
     for (int i = 0; i < h*w; i++)
     {
         in[i] = (cdf[(int)(in[i])] - cdf[0])*255/(h*w-cdf[0]);
-        printf("%d: %f\n",i,in[i]);
     }
     //实现了，但图片还是不一样，而且还很诡异的出现了不同方案，留作参考
+    //话说cdf是什么意思？
 }
