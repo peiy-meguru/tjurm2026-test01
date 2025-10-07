@@ -28,9 +28,9 @@ void my_strcat(char *str_1, char *str_2) {
     while (1)
     {
         if (str_1[i] == '\0') {
-            break;// 找长度，不过这个直接拿长度行不行？我觉得上面都写了下面随便抄一下也行
+            break;// 找长度，尽可能分离函数业务，不使用前函数（除非忍不住）
         }
-        i++;//应该直接for(int i=0;;i++)的，但不觉得很难看吗，中间留个空不填什么的
+        i++;//应该直接for(int i=0;;i++)的，但很难看，中间留个空不填
     }
     for (int j = 0;; j++)
     {
@@ -126,7 +126,7 @@ void rgb2gray(float *in, float *out, int h, int w) {
      * (2) 内存的访问。
      */
 
-     // 提醒：main.cpp中写了一拖四，明明放在主文件夹还读取..，导致图片读不出来，现已修改
+     // 提醒：main.cpp已修改
      for (int i = 0; i < h; i++)
      {
         for (int j = 0; j < w; j++)
@@ -186,7 +186,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *                  *               *               *
      *              P3(x1, y1)      Q2(x, y1)       P4(x2, y1)
      *
-     *          先用单线性插值法计算出 Q1 和 Q2 的值，再用单线性插值法计算出 P 的值，即//“注意到”
+     *          先用单线性插值法计算出 Q1 和 Q2 的值，再用单线性插值法计算出 P 的值，即
      *                     x2 - x          x - x1
      *          Q1 = P1 * ———————— + P2 * ————————
      *                     x2 - x1         x2 - x1
@@ -199,7 +199,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *          Q = Q1 * ———————— + Q2 * ————————
      *                    y2 - y1         y2 - y1
      *
-     *      2.3 化简：//我不会啊
+     *      2.3 化简：
      *          记 Dx = x2 - x1, Dy = y2 - y1, dx = x - x1, dy = y - y1，
      *
      *                     (Dx - dx)(Dy - dy)         dx(Dy - dy)
@@ -222,7 +222,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *          2. 找到其在原图中的四个邻居点 (这四个邻居是相邻的四个点，组成一个正方形)
      *          3. 用双线性插值法计算出 该像素点 的值
      *
-     *      **不难发现**，在这种情况下：Dx = Dy = 1（原图中相邻的四个像素横竖距离是1）
+     *      不难发现，在这种情况下：Dx = Dy = 1（原图中相邻的四个像素横竖距离是1）
      *      所以，上面的公式可以化简为：
      *          Q = P1 * (1 - dx)(1 - dy) + P2 * dx(1 - dy)
      *            + P3 * (1 - dx)dy + P4 * dxdy
@@ -236,11 +236,11 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *        所以需要对其进行边界检查//怎么办？我也不能截断吧，给你延展一下？（超出的直接按照边界点算）
      */
 
-    //香喷喷的屎山
+    //香喷喷的代码，虽然有点太丑了
     int new_h = h * scale, new_w = w * scale;
 
     float x0,y0,dx,dy,t1,t2,t3,t4;//dx,dy是后来计算的相对值，在投影的时候有用
-    int x1,y1,pp,np,i,j;//op means "Point I Pixel index", and np means "New Pixel index"
+    int x1,y1,pp,np,i,j,index;//pp means "Point I Pixel index", and np means "New Pixel index"
     for (i = 0; i < new_h-1; i++)
     {
         y0 = i / scale;
@@ -299,7 +299,6 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
 }
 
 
-#include <iostream>
 // 练习6，实现图像处理算法：直方图均衡化
 void hist_eq(float *in, int h, int w) {
     /**
@@ -319,25 +318,18 @@ void hist_eq(float *in, int h, int w) {
      */
     //https://zhuanlan.zhihu.com/p/687078241 辅助资料
     unsigned int hist[256] = {0};//像素灰度统计
-    //double prob[256];
-    double cdf[256];//原文看不懂，这里参考ai给的宝宝巴士版本
+    double cdf[256];//参考ai给的宝宝巴士版本
     for (int i = 0; i < h*w; i++)
     {
         hist[(int)(in[i])]++;
     }
-    /*for (int i = 0; i < 256; i++)
-    {
-        prob[i] = hist[i] / (h*w);
-    }*/
     cdf[0] = hist[0];
     for (int i = 1; i < 256; i++)
     {
-        cdf[i] = cdf[i-1] + hist[i];//其实我一直没懂一套组合拳下来干了什么，我只知道原文要积分
+        cdf[i] = cdf[i-1] + hist[i];
     }
     for (int i = 0; i < h*w; i++)
     {
         in[i] = (cdf[(int)(in[i])] - cdf[0])*255/(h*w-cdf[0]);
     }
-    //实现了，但图片还是不一样，而且还很诡异的出现了不同方案，留作参考
-    //话说cdf是什么意思？
 }
