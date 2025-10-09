@@ -50,6 +50,9 @@ char* my_strstr(char *s, char *p) {
      * s = "123456", p = "34"，应该返回指向字符'3'的指针。
      */
     // 前提：s长度大于p，p非空字符串
+    if (p[0] == '\0') {
+        return s; // 鲁棒性增强（其实我也不知道这回事）
+    }
     int ls = my_strlen(s);
     int lp = my_strlen(p);
     
@@ -135,6 +138,7 @@ void rgb2gray(float *in, float *out, int h, int w) {
         }
      }
      //另外一提，这两个图片实际上不同，从大小可以判断，不行写个python也可以验证
+     //事实上output输出颜色更深
 }
 
 
