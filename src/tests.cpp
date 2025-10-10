@@ -5,6 +5,7 @@ int my_strlen(char *str) {
     /**
      * 统计字符串的长度。
      */
+    // IMPLEMENT YOUR CODE HERE
     //原理：字符串末尾必须为\0
     int i = 0;
     while (1) {
@@ -23,6 +24,7 @@ void my_strcat(char *str_1, char *str_2) {
      * 将字符串str_2拼接到str_1之后，我们保证str_1指向的内存空间足够用于添加str_2。
      * 注意结束符'\0'的处理。
      */
+    // IMPLEMENT YOUR CODE HERE
     int i = 0;// 原来的注释清空了，我不想再补了
 
     while (1)
@@ -49,10 +51,12 @@ char* my_strstr(char *s, char *p) {
      * 例如：
      * s = "123456", p = "34"，应该返回指向字符'3'的指针。
      */
+    // IMPLEMENT YOUR CODE HERE
     // 前提：s长度大于p，p非空字符串
     if (p[0] == '\0') {
         return s; // 鲁棒性增强（其实我也不知道这回事）
     }
+    
     int ls = my_strlen(s);
     int lp = my_strlen(p);
     
@@ -129,7 +133,7 @@ void rgb2gray(float *in, float *out, int h, int w) {
      * (2) 内存的访问。
      */
 
-     // 提醒：main.cpp已修改
+     // IMPLEMENT YOUR CODE HERE
      for (int i = 0; i < h; i++)
      {
         for (int j = 0; j < w; j++)
@@ -239,7 +243,7 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *     3. 注意上面的方法中，四个邻居点的坐标可能会超出 src 的范围，
      *        所以需要对其进行边界检查//怎么办？我也不能截断吧，给你延展一下？（超出的直接按照边界点算）
      */
-
+    // IMPLEMENT YOUR CODE HERE
     // 香喷喷的代码，虽然有点太丑了
     // 已重构，修改了只考虑到最后一排像素点的bug，改为直接边界检查（也是不想直接计算）
     int new_h = h * scale, new_w = w * scale;
@@ -308,6 +312,7 @@ void hist_eq(float *in, int h, int w) {
      * (2) 灰度级个数为256，也就是{0, 1, 2, 3, ..., 255}
      * (3) 使用数组来实现灰度级 => 灰度级的映射
      */
+    // IMPLEMENT YOUR CODE HERE
     //https://zhuanlan.zhihu.com/p/687078241 辅助资料
     unsigned int hist[256] = {0};//像素灰度统计
     double cdf[256];//参考ai给的宝宝巴士版本
