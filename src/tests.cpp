@@ -240,16 +240,17 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
      *        所以需要对其进行边界检查//怎么办？我也不能截断吧，给你延展一下？（超出的直接按照边界点算）
      */
 
-    //香喷喷的代码，虽然有点太丑了
+    // 香喷喷的代码，虽然有点太丑了
+    // 已重构，修改了只考虑到最后一排像素点的bug，改为直接边界检查（也是不想直接计算）
     int new_h = h * scale, new_w = w * scale;
 
     float x0,y0,dx,dy,t1,t2,t3,t4;//dx,dy是后来计算的相对值，在投影的时候有用
     int x1,y1,pp,np,i,j,index;//pp means "Point I Pixel index", and np means "New Pixel index"
-    for (i = 0; i < new_h-1; i++)
+    for (i = 0; i < new_h; i++)
     {
         y0 = i / scale;
         y1 = static_cast<int>(y0);
-        for (j = 0; j < new_w-1; j++)
+        for (j = 0; j < new_w; j++)
         {
             np = 3*(i*new_w+j);
             x0 = j / scale;
@@ -262,44 +263,31 @@ void resize(float *in, float *out, int h, int w, int c, float scale) {
             t3 = dy*(1-dx);
             t4 = dy*dx;
 
-            out[np] = in[pp]*t1+in[pp+3]*t2+in[pp+3*w]*t3+in[pp+3*(w+1)]*t4;//R
-            out[np+1] = in[pp+1]*t1+in[pp+4]*t2+in[pp+3*w+1]*t3+in[pp+3*(w+1)+1]*t4;//G
-            out[np+2] = in[pp+2]*t1+in[pp+5]*t2+in[pp+3*w+2]*t3+in[pp+3*(w+1)+2]*t4;//B
+            // 边界处理事实上可以提前处理并简化，这里暂时保留
+            if (x1 < w-1 and y1 < h-1)//大多数
+            {
+                out[np] = in[pp]*t1+in[pp+3]*t2+in[pp+3*w]*t3+in[pp+3*(w+1)]*t4;//R
+                out[np+1] = in[pp+1]*t1+in[pp+4]*t2+in[pp+3*w+1]*t3+in[pp+3*(w+1)+1]*t4;//G
+                out[np+2] = in[pp+2]*t1+in[pp+5]*t2+in[pp+3*w+2]*t3+in[pp+3*(w+1)+2]*t4;//B
+            } else if (x1 < w-1 and y1 >= h-1)//下边界
+            {
+                out[np] = in[pp]*(t1+t3)+in[pp+3]*(t2+t4);//R
+                out[np+1] = in[pp+1]*(t1+t3)+in[pp+4]*(t2+t4);//G
+                out[np+2] = in[pp+2]*(t1+t3)+in[pp+5]*(t2+t4);//B
+            }
+            else if (x1 >= w-1 and y1 < h-1)//右边界
+            {
+                out[np] = in[pp]*(t1+t2)+in[pp+3]*(t3+t4);//R
+                out[np+1] = in[pp+1]*(t1+t2)+in[pp+4]*(t3+t4);//G
+                out[np+2] = in[pp+2]*(t1+t2)+in[pp+5]*(t3+t4);//B
+            }
+            else {//右下角区块
+                out[np] = in[pp];//R
+                out[np+1] = in[pp+1];//G
+                out[np+2] = in[pp+2];//B
+            }
         }
-        np = 3*(i*new_w+j);
-        x0 = j / scale;
-        x1 = static_cast<int>(x0);
-        pp = 3*(y1*w+x1);
-        dx = x0 - x1;
-        dy = y0 - y1;
-        t1 = (1-dx)*(1-dy);//第一项系数，下同理
-        t2 = dx*(1-dy);
-        t3 = dy*(1-dx);
-        t4 = dy*dx;
-        
-        out[np] = in[pp]*t1+in[pp]*t2+in[pp+3*w]*t3+in[pp+3*w]*t4;//R
-        out[np+1] = in[pp+1]*t1+in[pp+1]*t2+in[pp+3*w+1]*t3+in[pp+3*w+1]*t4;//G
-        out[np+2] = in[pp+2]*t1+in[pp+2]*t2+in[pp+3*w+2]*t3+in[pp+3*w+2]*t4;//B
     }
-    for (j = 0; j < new_w-1; j++)
-    {
-        np = 3*(i*new_w+j);
-        x0 = j / scale;
-        x1 = static_cast<int>(x0);
-        pp = 3*(y1*w+x1);
-        dx = x0 - x1;
-        dy = y0 - y1;
-        t1 = (1-dx)*(1-dy);//第一项系数，下同理
-        t2 = dx*(1-dy);
-        t3 = dy*(1-dx);
-        t4 = dy*dx;
-        out[np] = in[pp]*t1+in[pp+3]*t2+in[pp]*t3+in[pp+3]*t4;//R
-        out[np] = in[pp+1]*t1+in[pp+4]*t2+in[pp+1]*t3+in[pp+4]*t4;//G
-        out[np] = in[pp+2]*t1+in[pp+5]*t2+in[pp+2]*t3+in[pp+5]*t4;//B
-    }
-    out[3*(new_h*new_w-1)] = in[3*(h*w-1)];
-    out[3*(new_h*new_w-1)+1] = in[3*(h*w-1)+1];
-    out[3*(new_h*new_w-1)+2] = in[3*(h*w-1)+2];
 }
 
 
