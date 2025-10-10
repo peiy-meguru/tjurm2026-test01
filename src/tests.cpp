@@ -327,6 +327,6 @@ void hist_eq(float *in, int h, int w) {
     }
     for (int i = 0; i < h*w; i++)
     {
-        in[i] = (cdf[(int)(in[i])] - cdf[0])*255/(h*w-cdf[0]);
+        in[i] = (cdf[(int)(in[i])] - cdf[0])*255/(h*w-cdf[0]);//算出“0”起在多少分位数（联系百分位数的内容写就行）
     }
 }
